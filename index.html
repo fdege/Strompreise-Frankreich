@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Stromtarif</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Stromtarif" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#f2f3f5" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#111317" media="(prefers-color-scheme: dark)" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="icon-180.png" />
+    <link rel="icon" href="icon-180.png" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f2f3f5;
+        --card: #ffffff;
+        --text: #14171c;
+        --muted: #667085;
+        --line: #e4e7ec;
+        --gruen: #1c9a4b;
+        --gelb: #f2b705;
+        --rot: #d92d20;
+        --offen: #98a2b3;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #111317;
+          --card: #1c1f26;
+          --text: #f2f4f7;
+          --muted: #98a2b3;
+          --line: #2c313a;
+          --gruen: #22a955;
+          --rot: #e5483b;
+          --offen: #5d6675;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+        font-size: 17px;
+        line-height: 1.35;
+      }
+
+      main {
+        max-width: 520px;
+        margin: 0 auto;
+        padding: calc(env(safe-area-inset-top) + 20px) calc(env(safe-area-inset-right) + 16px)
+          calc(env(safe-area-inset-bottom) + 24px) calc(env(safe-area-inset-left) + 16px);
+      }
+
+      header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 30px;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .ampel-gruen {
+        --ampel: var(--gruen);
+        --on-ampel: #ffffff;
+      }
+
+      .ampel-gelb {
+        --ampel: var(--gelb);
+        --on-ampel: #1d1a05;
+      }
+
+      .ampel-rot {
+        --ampel: var(--rot);
+        --on-ampel: #ffffff;
+      }
+
+      .ampel-offen {
+        --ampel: var(--offen);
+        --on-ampel: #ffffff;
+      }
+
+      .now {
+        background: var(--ampel);
+        color: var(--on-ampel);
+        border-radius: 22px;
+        padding: 18px 20px 20px;
+        transition: background 0.3s;
+      }
+
+      .now p {
+        margin: 0;
+      }
+
+      .now-label {
+        font-size: 15px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        opacity: 0.85;
+      }
+
+      .now-price {
+        font-size: 58px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .now-price .unit {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0;
+      }
+
+      .now-detail {
+        font-size: 16px;
+        opacity: 0.92;
+      }
+
+      .warning {
+        margin: 12px 0 0;
+        padding: 12px 14px;
+        border-radius: 14px;
+        border: 1px solid var(--rot);
+        color: var(--text);
+        font-size: 15px;
+      }
+
+      .warning.hint {
+        border-color: var(--muted);
+      }
+
+      .day {
+        margin-top: 16px;
+        background: var(--card);
+        border-radius: 22px;
+        padding: 16px 18px 6px;
+      }
+
+      .day-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .day h2 {
+        margin: 0;
+        font-size: 21px;
+      }
+
+      .day-date {
+        color: var(--muted);
+        font-size: 15px;
+        white-space: nowrap;
+      }
+
+      .day-color {
+        margin: 2px 0 8px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .rows {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: 78px 1fr auto;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 0;
+        border-top: 1px solid var(--line);
+      }
+
+      .row-time {
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .row-time small {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 400;
+      }
+
+      .row-label {
+        font-size: 15px;
+        color: var(--muted);
+      }
+
+      .row-label strong {
+        display: block;
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .row.is-now .row-label strong::after {
+        content: 'jetzt';
+        margin-left: 8px;
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: var(--text);
+        color: var(--card);
+        font-size: 12px;
+        font-weight: 600;
+        vertical-align: 1px;
+      }
+
+      .price {
+        min-width: 104px;
+        padding: 8px 12px;
+        border-radius: 12px;
+        background: var(--ampel);
+        color: var(--on-ampel);
+        font-size: 18px;
+        font-weight: 700;
+        text-align: right;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .price small {
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      footer {
+        margin-top: 18px;
+        text-align: center;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      footer p {
+        margin: 0 0 12px;
+      }
+
+      button {
+        appearance: none;
+        border: 0;
+        border-radius: 14px;
+        padding: 12px 20px;
+        margin-bottom: 14px;
+        background: var(--card);
+        color: var(--text);
+        font: inherit;
+        font-weight: 600;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        margin-left: 8px;
+        border-radius: 50%;
+        background: var(--ampel);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Stromtarif</h1>
+        <p class="subtitle">EDF Tempo</p>
+      </header>
+
+      <section id="now" class="now ampel-offen" aria-live="polite">
+        <p class="now-label">Jetzt</p>
+        <p class="now-price"><span id="now-cents">–</span> <span class="unit">ct/kWh</span></p>
+        <p id="now-detail" class="now-detail">Tarif wird geladen …</p>
+      </section>
+
+      <p id="warning" class="warning" hidden></p>
+      <p id="hint" class="warning hint" hidden></p>
+
+      <section id="days"></section>
+
+      <footer>
+        <p id="status">&nbsp;</p>
+        <button id="refresh" type="button">Jetzt aktualisieren</button>
+        <p class="legend">
+          <span class="dot ampel-gruen"></span> unter 20 ct
+          <span class="dot ampel-gelb"></span> ab 20 ct
+          <span class="dot ampel-rot"></span> über 30 ct
+        </p>
+      </footer>
+    </main>
+
+    <script>
+      'use strict'
+
+      const REFRESH_MS = 10 * 60 * 1000
+      const TICK_MS = 30 * 1000
+      const CACHE_KEY = 'stromtarif.v2'
+
+      // Datenquellen. Alle drei erlauben den direkten Zugriff aus dem Browser (CORS).
+      const EDF_URL = 'https://api-commerce.edf.fr/commerce/activet/v1/calendrier-jours-effacement'
+      const TEMPO_API = 'https://www.api-couleur-tempo.fr/api'
+      const TRVE_CSV = 'https://jourtempo.fr/api/v1/trve-historique.csv'
+
+      // Preise in ct/kWh inkl. Steuern, falls keine Quelle erreichbar ist.
+      const FALLBACK_PRICES = {
+        source: 'eingebaut',
+        validFrom: '2026-08-01',
+        table: {
+          BLEU: { HC: 13.56, HP: 16.54 },
+          BLANC: { HC: 15.36, HP: 19.21 },
+          ROUGE: { HC: 16.15, HP: 72.95 },
+        },
+      }
+
+      const COLOR_BY_STATUS = { TEMPO_BLEU: 'BLEU', TEMPO_BLANC: 'BLANC', TEMPO_ROUGE: 'ROUGE' }
+      const COLOR_BY_CODE = { 1: 'BLEU', 2: 'BLANC', 3: 'ROUGE' }
+      const PERIODS = { HP: 'Hauptzeit (HP)', HC: 'Nebenzeit (HC)' }
+      const COLORS = { BLEU: 'Blau', BLANC: 'Weiß', ROUGE: 'Rot' }
+
+      const nowBox = document.getElementById('now')
+      const nowCents = document.getElementById('now-cents')
+      const nowDetail = document.getElementById('now-detail')
+      const warning = document.getElementById('warning')
+      const hint = document.getElementById('hint')
+      const daysBox = document.getElementById('days')
+      const statusLine = document.getElementById('status')
+      const refreshButton = document.getElementById('refresh')
+
+      const parisDate = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Paris',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
+      const parisClock = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Paris',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      })
+      const dayLabel = new Intl.DateTimeFormat('de-DE', {
+        timeZone: 'UTC',
+        weekday: 'short',
+        day: '2-digit',
+        month: '2-digit',
+      })
+      const timeLabel = new Intl.DateTimeFormat('de-DE', { hour: '2-digit', minute: '2-digit' })
+      const centLabel = new Intl.NumberFormat('de-DE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+
+      let data = null
+      let lastFetch = 0
+      let loading = false
+
+      function parisNow() {
+        const parts = Object.fromEntries(parisClock.formatToParts(new Date()).map((p) => [p.type, p.value]))
+        return { date: parisDate.format(new Date()), time: `${parts.hour}:${parts.minute}` }
+      }
+
+      function addDays(date, days) {
+        const d = new Date(`${date}T00:00:00Z`)
+        d.setUTCDate(d.getUTCDate() + days)
+        return d.toISOString().slice(0, 10)
+      }
+
+      async function request(url, options, timeoutMs) {
+        const controller = new AbortController()
+        const timer = setTimeout(() => controller.abort(), timeoutMs)
+        try {
+          const response = await fetch(url, { cache: 'no-store', signal: controller.signal, ...options })
+          if (!response.ok) throw new Error(`HTTP ${response.status}`)
+          return await response.text()
+        } finally {
+          clearTimeout(timer)
+        }
+      }
+
+      async function getJson(url, options) {
+        return JSON.parse(await request(url, options, 15000))
+      }
+
+      // Farben: zuerst die offizielle EDF-Schnittstelle, sonst der Tempo-Spiegel.
+      async function colorsFromEdf(from, to) {
+        const url =
+          `${EDF_URL}?option=TEMPO&dateApplicationBorneInf=${from}&dateApplicationBorneSup=${to}` +
+          `&identifiantConsommateur=src`
+        const body = await getJson(url, {
+          headers: {
+            'application-origine-controlee': 'site_RC',
+            'situation-usage': 'Jours Effacement',
+          },
+        })
+        const calendar = body?.content?.options?.find((option) => option.option === 'TEMPO')?.calendrier
+        if (!Array.isArray(calendar) || calendar.length === 0) throw new Error('unerwartetes Format')
+        const colors = {}
+        for (const day of calendar) colors[day.dateApplication] = COLOR_BY_STATUS[day.statut] ?? null
+        return colors
+      }
+
+      async function colorsFromTempoApi(dates) {
+        const colors = {}
+        await Promise.all(
+          dates.map(async (date) => {
+            const body = await getJson(`${TEMPO_API}/jourTempo/${date}`)
+            colors[body.dateJour ?? date] = COLOR_BY_CODE[body.codeJour] ?? null
+          }),
+        )
+        return colors
+      }
+
+      // Preise: erst die offizielle CRE-Tarifdatei als Spiegel, dann der Tempo-Spiegel.
+      function parseTrveCsv(csv, today) {
+        const lines = csv.replace(/^\uFEFF/, '').trim().split(/\r?\n/)
+        const head = lines[0].split(',')
+        const column = (name) => head.indexOf(name)
+        const perDate = new Map()
+        for (const line of lines.slice(1)) {
+          const fields = line.split(',')
+          const date = fields[column('date_effet')]
+          if (fields[column('option')] !== 'tempo' || fields[column('ht_ttc')] !== 'TTC') continue
+          if (date > today) continue
+          const component = fields[column('composante')]
+          if (!component.startsWith('kwh_')) continue
+          const value = Number(fields[column('valeur')])
+          if (!Number.isFinite(value) || value <= 0) continue
+          if (!perDate.has(date)) perDate.set(date, {})
+          perDate.get(date)[component] = value
+        }
+        const dates = [...perDate.keys()].sort().reverse()
+        for (const date of dates) {
+          const found = perDate.get(date)
+          const table = {
+            BLEU: { HC: found.kwh_bleu_hc, HP: found.kwh_bleu_hp },
+            BLANC: { HC: found.kwh_blanc_hc, HP: found.kwh_blanc_hp },
+            ROUGE: { HC: found.kwh_rouge_hc, HP: found.kwh_rouge_hp },
+          }
+          const complete = Object.values(table).every((p) => p.HC > 0 && p.HP > 0)
+          if (complete) return { source: 'CRE (jourtempo.fr)', validFrom: date, table }
+        }
+        throw new Error('keine vollständigen Tarife gefunden')
+      }
+
+      async function pricesFromTempoApi() {
+        const body = await getJson(`${TEMPO_API}/tarifs`)
+        const table = {
+          BLEU: { HC: body.bleuHC * 100, HP: body.bleuHP * 100 },
+          BLANC: { HC: body.blancHC * 100, HP: body.blancHP * 100 },
+          ROUGE: { HC: body.rougeHC * 100, HP: body.rougeHP * 100 },
+        }
+        const complete = Object.values(table).every((p) => p.HC > 0 && p.HP > 0)
+        if (!complete) throw new Error('unvollständige Tarife')
+        return { source: 'api-couleur-tempo.fr', validFrom: body.dateDebut, table }
+      }
+
+      async function loadPrices(today) {
+        try {
+          return parseTrveCsv(await request(TRVE_CSV, {}, 20000), today)
+        } catch (first) {
+          try {
+            return await pricesFromTempoApi()
+          } catch (second) {
+            console.warn('Preisabfrage fehlgeschlagen:', first.message, '/', second.message)
+            return FALLBACK_PRICES
+          }
+        }
+      }
+
+      // Ein Tempo-Tag läuft von 6 bis 6 Uhr: Die Stunden davor gehören noch zur Farbe des Vortags.
+      function buildDay(date, colors, prices) {
+        const previous = colors[addDays(date, -1)] ?? null
+        const current = colors[date] ?? null
+        const segment = (start, end, period, color) => ({
+          start,
+          end,
+          period,
+          color,
+          cents: color ? Math.round(prices.table[color][period] * 100) / 100 : null,
+        })
+        return {
+          date,
+          color: current,
+          segments: [
+            segment('00:00', '06:00', 'HC', previous),
+            segment('06:00', '22:00', 'HP', current),
+            segment('22:00', '24:00', 'HC', current),
+          ],
+        }
+      }
+
+      async function loadData() {
+        const today = parisNow().date
+        const dates = [addDays(today, -1), today, addDays(today, 1)]
+        const notes = []
+
+        let colors
+        let colorsSource = 'EDF'
+        try {
+          colors = await colorsFromEdf(dates[0], dates[2])
+        } catch (error) {
+          colorsSource = 'api-couleur-tempo.fr'
+          notes.push(`EDF nicht erreichbar (${error.message}), Farben kommen vom Tempo-Spiegel.`)
+          colors = await colorsFromTempoApi(dates)
+        }
+
+        const prices = await loadPrices(today)
+        if (prices.source === 'eingebaut') {
+          notes.push('Preise konnten nicht geladen werden, es gelten die im Programm hinterlegten Werte.')
+        }
+
+        return {
+          updatedAt: new Date().toISOString(),
+          source: { colors: colorsSource, prices: prices.source, pricesValidFrom: prices.validFrom },
+          days: [buildDay(today, colors, prices), buildDay(dates[2], colors, prices)],
+          notes,
+        }
+      }
+
+      function ampel(cents) {
+        if (cents == null) return 'ampel-offen'
+        if (cents > 30) return 'ampel-rot'
+        if (cents >= 20) return 'ampel-gelb'
+        return 'ampel-gruen'
+      }
+
+      function el(tag, className, text) {
+        const node = document.createElement(tag)
+        if (className) node.className = className
+        if (text != null) node.textContent = text
+        return node
+      }
+
+      function renderDay(day, title, now) {
+        const card = el('article', 'day')
+
+        const head = el('div', 'day-head')
+        head.append(el('h2', '', title), el('span', 'day-date', dayLabel.format(new Date(`${day.date}T12:00:00Z`))))
+        card.append(head)
+
+        card.append(
+          el(
+            'p',
+            'day-color',
+            day.color
+              ? `Tempo-Tag: ${COLORS[day.color]}`
+              : 'Tempo-Farbe noch nicht veröffentlicht (meist gegen 11 Uhr)',
+          ),
+        )
+
+        const rows = el('ul', 'rows')
+        for (const segment of day.segments) {
+          const isNow = day.date === now.date && segment.start <= now.time && now.time < segment.end
+          const row = el('li', isNow ? 'row is-now' : 'row')
+
+          const time = el('div', 'row-time', `ab ${segment.start}`)
+          time.append(el('small', '', `bis ${segment.end}`))
+
+          const label = el('div', 'row-label')
+          label.append(el('strong', '', PERIODS[segment.period]))
+          label.append(segment.color ? `Tempo ${COLORS[segment.color]}` : 'Farbe offen')
+
+          const price = el('div', `price ${ampel(segment.cents)}`)
+          if (segment.cents == null) price.textContent = 'offen'
+          else price.append(`${centLabel.format(segment.cents)} `, el('small', '', 'ct'))
+
+          row.append(time, label, price)
+          rows.append(row)
+        }
+        card.append(rows)
+        return card
+      }
+
+      function render() {
+        const now = parisNow()
+        if (!data) {
+          nowBox.className = 'now ampel-offen'
+          nowCents.textContent = '–'
+          nowDetail.textContent = 'Tarif wird geladen …'
+          daysBox.replaceChildren()
+          statusLine.textContent = '\u00a0'
+          return
+        }
+        const today = data.days[0]
+        const current =
+          today.date === now.date ? today.segments.find((s) => s.start <= now.time && now.time < s.end) : null
+
+        nowBox.className = `now ${ampel(current?.cents)}`
+        nowCents.textContent = current?.cents != null ? centLabel.format(current.cents) : '–'
+        nowDetail.textContent = current
+          ? `${PERIODS[current.period]} · Tempo ${COLORS[current.color] ?? 'offen'} · bis ${current.end} Uhr`
+          : 'Kein aktueller Tarif verfügbar'
+
+        daysBox.replaceChildren(renderDay(today, 'Heute', now), renderDay(data.days[1], 'Morgen', now))
+
+        const validFrom = data.source.pricesValidFrom.split('-').reverse().join('.')
+        statusLine.textContent =
+          `Stand ${timeLabel.format(new Date(data.updatedAt))} Uhr · Farben: ${data.source.colors} · ` +
+          `Preise: ${data.source.prices}, gültig seit ${validFrom}`
+
+        warning.textContent = data.notes.join(' ')
+        warning.hidden = data.notes.length === 0
+      }
+
+      function showHint(text) {
+        hint.textContent = text ?? ''
+        hint.hidden = !text
+      }
+
+      function readCache() {
+        try {
+          const cached = JSON.parse(localStorage.getItem(CACHE_KEY))
+          return cached && cached.days ? cached : null
+        } catch {
+          return null
+        }
+      }
+
+      async function load() {
+        if (loading) return
+        loading = true
+        refreshButton.disabled = true
+        try {
+          data = await loadData()
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify(data))
+          } catch {}
+          showHint(null)
+        } catch (error) {
+          const cached = readCache()
+          const stand = cached ? ` Angezeigt wird der Stand von ${timeLabel.format(new Date(cached.updatedAt))} Uhr.` : ''
+          showHint(`Tarif konnte nicht geladen werden: ${error.message}.${stand}`)
+          if (cached) data = cached
+        } finally {
+          lastFetch = Date.now()
+          loading = false
+          refreshButton.disabled = false
+          render()
+        }
+      }
+
+      // iOS hält Timer im Hintergrund an, deshalb wird das Alter der Daten bei jedem Tick geprüft.
+      function tick() {
+        const dayChanged = data && data.days[0].date !== parisNow().date
+        if (dayChanged || Date.now() - lastFetch >= REFRESH_MS) load()
+        else render()
+      }
+
+      refreshButton.addEventListener('click', load)
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') tick()
+      })
+      window.addEventListener('pageshow', tick)
+      window.addEventListener('online', load)
+      setInterval(tick, TICK_MS)
+
+      if (location.protocol === 'file:') {
+        showHint(
+          'Diese Datei wurde direkt vom Gerät geöffnet. Safari darf in diesem Fall keine Daten aus dem ' +
+            'Internet laden. Bitte die App über ihre Web-Adresse (http/https) aufrufen.',
+        )
+      } else {
+        load()
+      }
+    </script>
+  </body>
+</html>
