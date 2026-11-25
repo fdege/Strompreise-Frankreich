@@ -142,6 +142,16 @@
         opacity: 0.92;
       }
 
+      .now .now-alert {
+        margin: 12px 0 0;
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.22);
+        color: var(--on-ampel);
+        font-size: 17px;
+        font-weight: 700;
+      }
+
       .warning {
         margin: 12px 0 0;
         padding: 12px 14px;
@@ -304,13 +314,14 @@
     <main>
       <header>
         <h1>Stromtarif</h1>
-        <p class="subtitle">EDF Tempo</p>
+        <p class="subtitle">Lacabanne</p>
       </header>
 
       <section id="now" class="now ampel-offen" aria-live="polite">
         <p class="now-label">Jetzt</p>
         <p class="now-price"><span id="now-cents">–</span> <span class="unit">ct/kWh</span></p>
         <p id="now-detail" class="now-detail">Tarif wird geladen …</p>
+        <p id="now-alert" class="now-alert" hidden>Heute nicht waschen und nicht backen!</p>
       </section>
 
       <p id="warning" class="warning" hidden></p>
@@ -360,6 +371,7 @@
       const nowBox = document.getElementById('now')
       const nowCents = document.getElementById('now-cents')
       const nowDetail = document.getElementById('now-detail')
+      const nowAlert = document.getElementById('now-alert')
       const warning = document.getElementById('warning')
       const hint = document.getElementById('hint')
       const daysBox = document.getElementById('days')
@@ -617,6 +629,7 @@
           nowBox.className = 'now ampel-offen'
           nowCents.textContent = '–'
           nowDetail.textContent = 'Tarif wird geladen …'
+          nowAlert.hidden = true
           daysBox.replaceChildren()
           statusLine.textContent = '\u00a0'
           return
@@ -630,6 +643,9 @@
         nowDetail.textContent = current
           ? `${PERIODS[current.period]} · Tempo ${COLORS[current.color] ?? 'offen'} · bis ${current.end} Uhr`
           : 'Kein aktueller Tarif verfügbar'
+
+        // Warnung nur im teuren roten Zeitfenster (rote Hauptzeit, 72,95 ct), nicht in der roten Nebenzeit.
+        nowAlert.hidden = !(current && current.color === 'ROUGE' && current.period === 'HP')
 
         daysBox.replaceChildren(renderDay(today, 'Heute', now), renderDay(data.days[1], 'Morgen', now))
 

@@ -59,6 +59,9 @@ eigener Server nötig.
 - Ein Tempo-Tag läuft von 6 Uhr bis 6 Uhr: 00:00–06:00 gilt die Nebenzeit des Vortags,
   06:00–22:00 die Hauptzeit, ab 22:00 die Nebenzeit.
 - Ampel: unter 20 ct grün, ab 20 ct gelb, über 30 ct rot.
+- Ist gerade der teure rote Abschnitt aktiv (rote Hauptzeit, 72,95 ct), zeigt die obere Box den
+  Hinweis „Heute nicht waschen und nicht backen!“. In der roten Nebenzeit (16,15 ct) erscheint
+  er nicht, weil Strom dann günstig ist.
 - Die App lädt alle 10 Minuten neu, außerdem beim Öffnen, bei Tageswechsel und sobald das
   iPhone wieder Internet hat. Die zuletzt geladenen Werte werden im Gerät gespeichert und
   bei fehlender Verbindung mit einem Hinweis weiter angezeigt.
