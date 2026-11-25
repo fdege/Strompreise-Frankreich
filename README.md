@@ -7,13 +7,31 @@ und holt die Daten selbst. Es muss kein Rechner laufen.
 
 ## Dateien
 
-    index.html     die komplette App (HTML, CSS, JavaScript in einer Datei)
-    manifest.json  Angaben für den Start vom Home-Bildschirm
-    icon-180.png   App-Symbol (iPhone)
-    icon-512.png   App-Symbol (groß)
+    index.html      die komplette App (HTML, CSS, JavaScript in einer Datei)
+    manifest.json   Angaben für den Start vom Home-Bildschirm
+    icon-180.png    App-Symbol (iPhone)
+    icon-512.png    App-Symbol (groß)
+    qr-poster.svg   Plakat mit QR-Code (Druckvorlage, beliebig skalierbar)
+    qr-poster.png   dasselbe Plakat als Bild, 2800 x 3960 px
+    qr-code.svg     nur der QR-Code, ohne Beschriftung
+    qr-code.png     nur der QR-Code, 1170 x 1170 px
+    Testen.command  startet die App zum Ausprobieren am Mac
 
-Für die App genügt `index.html`. Die drei anderen Dateien machen nur das Symbol und den
-Start vom Home-Bildschirm schöner.
+Für die App genügt `index.html`. `manifest.json` und die beiden Symbole machen nur den Start
+vom Home-Bildschirm schöner, die QR-Dateien sind zum Ausdrucken, und `Testen.command` braucht
+man nur zum Ausprobieren am Rechner.
+
+## QR-Code zum Ausdrucken
+
+`qr-poster.svg` und `qr-poster.png` zeigen über dem Code die Frage „Was kostet der Strom in
+Lacabanne?“ und führen zur Adresse der App. Das PDF für A4 entsteht am einfachsten so:
+
+1. `qr-poster.svg` in Safari öffnen (oder `qr-poster.png` in einem Bildprogramm).
+2. Drucken (⌘P) und als PDF sichern.
+
+Der Code hat 33 x 33 Module, Fehlerkorrekturstufe M und lässt sich aus rund 30 cm Entfernung
+zuverlässig scannen. Im Plakat ist ein Modul 22 px groß, gedruckt auf A4 sind das etwa 3,5 mm.
+
 
 ## Auf das iPhone bringen
 
@@ -38,7 +56,8 @@ funktioniert nicht, weil Safari dann keine Internetdaten laden darf.
 
 **Auf dem iPhone einrichten**
 
-1. Die Adresse in Safari öffnen.
+1. Die Adresse in Safari öffnen – am einfachsten mit der Kamera den QR-Code aus
+   `qr-poster.svg` scannen, er führt direkt dorthin.
 2. Teilen-Symbol → „Zum Home-Bildschirm“.
 3. Die App startet danach wie eine normale App mit eigenem Symbol.
 
