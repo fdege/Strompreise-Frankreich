@@ -161,6 +161,28 @@
         font-size: 15px;
       }
 
+      .tomorrow-alert {
+        margin: 12px 0 0;
+        padding: 14px 16px;
+        border-radius: 18px;
+        border: 2px solid var(--rot);
+        background: var(--card);
+        color: var(--text);
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .tomorrow-alert::before {
+        content: 'Morgen rot';
+        display: block;
+        margin-bottom: 2px;
+        color: var(--rot);
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
       .warning.hint {
         border-color: var(--muted);
       }
@@ -324,6 +346,10 @@
         <p id="now-alert" class="now-alert" hidden>Heute nicht waschen und nicht backen!</p>
       </section>
 
+      <p id="tomorrow-alert" class="tomorrow-alert" hidden>
+        Heute Abend noch waschen und backen.
+      </p>
+
       <p id="warning" class="warning" hidden></p>
       <p id="hint" class="warning hint" hidden></p>
 
@@ -372,6 +398,7 @@
       const nowCents = document.getElementById('now-cents')
       const nowDetail = document.getElementById('now-detail')
       const nowAlert = document.getElementById('now-alert')
+      const tomorrowAlert = document.getElementById('tomorrow-alert')
       const warning = document.getElementById('warning')
       const hint = document.getElementById('hint')
       const daysBox = document.getElementById('days')
@@ -630,6 +657,7 @@
           nowCents.textContent = '–'
           nowDetail.textContent = 'Tarif wird geladen …'
           nowAlert.hidden = true
+          tomorrowAlert.hidden = true
           daysBox.replaceChildren()
           statusLine.textContent = '\u00a0'
           return
@@ -646,6 +674,9 @@
 
         // Warnung nur im teuren roten Zeitfenster (rote Hauptzeit, 72,95 ct), nicht in der roten Nebenzeit.
         nowAlert.hidden = !(current && current.color === 'ROUGE' && current.period === 'HP')
+
+        // Vorwarnung am Vortag: Morgen gilt der rote Tarif.
+        tomorrowAlert.hidden = data.days[1].color !== 'ROUGE'
 
         daysBox.replaceChildren(renderDay(today, 'Heute', now), renderDay(data.days[1], 'Morgen', now))
 

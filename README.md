@@ -62,6 +62,8 @@ eigener Server nötig.
 - Ist gerade der teure rote Abschnitt aktiv (rote Hauptzeit, 72,95 ct), zeigt die obere Box den
   Hinweis „Heute nicht waschen und nicht backen!“. In der roten Nebenzeit (16,15 ct) erscheint
   er nicht, weil Strom dann günstig ist.
+- Vorwarnung: Sobald für morgen der rote Tarif veröffentlicht ist (meist gegen 11 Uhr), steht
+  unter der oberen Box „Morgen rot – Heute Abend noch waschen und backen.“
 - Die App lädt alle 10 Minuten neu, außerdem beim Öffnen, bei Tageswechsel und sobald das
   iPhone wieder Internet hat. Die zuletzt geladenen Werte werden im Gerät gespeichert und
   bei fehlender Verbindung mit einem Hinweis weiter angezeigt.
